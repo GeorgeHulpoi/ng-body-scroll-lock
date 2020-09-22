@@ -1,0 +1,47 @@
+{
+  "name": "ng-body-scroll-lock",
+  "description": "Angular Service implementation for https://github.com/willmcpo/body-scroll-lock",
+  "author": "George-Valentin Hulpoi <contact@gvhdev.com> (https://gvhdev.com)",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": "https://github.com/GeorgeHulpoi/ng-body-scroll-lock.git",
+  "bugs": {
+    "url": "https://github.com/GeorgeHulpoi/ng-body-scroll-lock/issues"
+  },
+  "homepage": "https://github.com/GeorgeHulpoi/ng-body-scroll-lock",
+  "keywords": [
+    "body scroll",
+    "body scroll lock",
+    "scroll",
+    "lock",
+    "freeze",
+    "toggle",
+    "disable",
+    "overflow",
+    "modal",
+    "lightbox",
+    "angular",
+    "ios",
+    "mobile",
+    "desktop",
+    "tablet",
+    "bsl"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^9.1.12",
+    "@angular/core": "^9.1.12"
+  },
+  "dependencies": {
+    "tslib": "^1.10.0"
+  },
+  "main": "bundles/ng-body-scroll-lock.umd.js",
+  "module": "fesm5/ng-body-scroll-lock.js",
+  "es2015": "fesm2015/ng-body-scroll-lock.js",
+  "esm5": "esm5/ng-body-scroll-lock.js",
+  "esm2015": "esm2015/ng-body-scroll-lock.js",
+  "fesm5": "fesm5/ng-body-scroll-lock.js",
+  "fesm2015": "fesm2015/ng-body-scroll-lock.js",
+  "typings": "ng-body-scroll-lock.d.ts",
+  "metadata": "ng-body-scroll-lock.metadata.json",
+  "sideEffects": false
+}
