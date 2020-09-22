@@ -28,8 +28,7 @@
     "bsl"
   ],
   "peerDependencies": {
-    "@angular/common": "^9.1.12",
-    "@angular/core": "^9.1.12"
+    "@angular/core": "*"
   },
   "dependencies": {
     "tslib": "^1.10.0"

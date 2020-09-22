@@ -1,24 +1,87 @@
-# NgBodyScrollLock
+# Angular Body Scroll Lock
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.12.
+This is an Angular library that implements the [body-scroll-lock](https://github.com/willmcpo/body-scroll-lock), which can have minor problems in an Angular Project. The **Angular Body Scroll Lock** purpose is to optimize and implements Angular features, but without changing the original script logic. Every change on the **body-scroll-lock** package will be synchronized in this project too.
 
-## Code scaffolding
+## Install
 
-Run `ng generate component component-name --project ng-body-scroll-lock` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-body-scroll-lock`.
-> Note: Don't forget to add `--project ng-body-scroll-lock` or else it will be added to the default project in your `angular.json` file. 
+    $ yarn add ng-body-scroll-lock
+    
+    or
+    
+    $ npm install ng-body-scroll-lock
 
-## Build
+## Usage
 
-Run `ng build ng-body-scroll-lock` to build the project. The build artifacts will be stored in the `dist/` directory.
+Import the **NgBodyScrollLock** in your module.
 
-## Publishing
+##### Example
 
-After building your library with `ng build ng-body-scroll-lock`, go to the dist folder `cd dist/ng-body-scroll-lock` and run `npm publish`.
+```typescript
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { NgBodyScrollLockModule } from 'ng-body-scroll-lock';
 
-## Running unit tests
+import { NavigationBarComponent } from './navigation-bar.component';
+import { HamburgerIconComponent } from './hamburger-icon/hamburger-icon.component';
 
-Run `ng test ng-body-scroll-lock` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@NgModule({
+	imports:
+	[
+		CommonModule,
+		RouterModule,
+		NgBodyScrollLockModule
+	],
+	declarations:
+	[
+		NavigationBarComponent,
+		HamburgerIconComponent
+	],
+	exports:
+	[
+		NavigationBarComponent
+	]
+})
+export class NavigationBarModule { }
+```
 
-## Further help
+Import the **NgBodyScrollLockService** where you want to use it
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+##### Example
+
+```typescript 
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { NgBodyScrollLockService } from 'ng-body-scroll-lock';
+
+@Component
+({
+	selector: 'navigation-bar',
+	templateUrl: './navigation-bar-component.html',
+	styleUrls: ['./navigation-bar-component.scss']
+})
+export class NavigationBarComponent {
+
+	@ViewChild('verticalMenu', {static: true}) VerticalMenuRef: ElementRef;
+    public isVerticalMenuOpen: boolean = false;
+
+	constructor(private bodyScrollLock: NgBodyScrollLockService) {}
+
+    public openVerticalMenu() {
+        this.isVerticalMenuOpen = true;
+        this.bodyScrollLock.DisableBodyScroll(this.VerticalMenuRef.nativeElement);
+    }
+
+    public closeVerticalMenu() {
+        this.isVerticalMenuOpen = false;
+        this.bodyScrollLock.EnableBodyScroll(this.VerticalMenuRef.nativeElement);
+    }
+}
+```
+
+## Functions
+
+| Function                  | Arguments                                                  | Return | Description                                                  |
+| :------------------------ | :--------------------------------------------------------- | :----: | :----------------------------------------------------------- |
+| `DisableBodyScroll`       | `targetElement: HTMLElement`, `options: BodyScrollOptions` | `void` | Disables body scroll while enabling scroll on target element |
+| `EnableBodyScroll`        | `targetElement: HTMLElement`                               | `void` | Enables body scroll and removing listeners on target element |
+| `ClearAllBodyScrollLocks` | `null`                                                     | `void` | Clears all scroll locks                                      |

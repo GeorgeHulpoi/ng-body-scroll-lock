@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('ng-body-scroll-lock', ['exports', '@angular/core', '@angular/common'], factory) :
-    (global = global || self, factory(global['ng-body-scroll-lock'] = {}, global.ng.core, global.ng.common));
-}(this, (function (exports, core, common) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core')) :
+    typeof define === 'function' && define.amd ? define('ng-body-scroll-lock', ['exports', '@angular/core'], factory) :
+    (global = global || self, factory(global['ng-body-scroll-lock'] = {}, global.ng.core));
+}(this, (function (exports, core) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -224,16 +224,13 @@
     }
 
     var NgBodyScrollLockService = /** @class */ (function () {
-        function NgBodyScrollLockService(platformId) {
-            this.platformId = platformId;
+        function NgBodyScrollLockService() {
             this.hasPassiveEvents = false;
             this.initialClientY = -1;
             this.locks = [];
             this.documentListenerAdded = false;
-            if (common.isPlatformBrowser(this.platformId)) {
-                this.TestPassive();
-                this.CheckIfIsIosDevice();
-            }
+            this.TestPassive();
+            this.CheckIfIsIosDevice();
         }
         NgBodyScrollLockService.prototype.DisableBodyScroll = function (targetElement, options) {
             var _this = this;
@@ -407,12 +404,8 @@
                 window.removeEventListener('testPassive', null, passiveTestOptions);
             }
         };
-        NgBodyScrollLockService.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
-        ]; };
         NgBodyScrollLockService = __decorate([
-            core.Injectable(),
-            __param(0, core.Inject(core.PLATFORM_ID))
+            core.Injectable()
         ], NgBodyScrollLockService);
         return NgBodyScrollLockService;
     }());
@@ -422,7 +415,7 @@
         }
         NgBodyScrollLockModule = __decorate([
             core.NgModule({
-                providers: [NgBodyScrollLockService],
+                providers: [NgBodyScrollLockService]
             })
         ], NgBodyScrollLockModule);
         return NgBodyScrollLockModule;

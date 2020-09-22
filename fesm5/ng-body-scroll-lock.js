@@ -1,18 +1,14 @@
-import { __spread, __decorate, __param } from 'tslib';
-import { Inject, PLATFORM_ID, Injectable, NgModule } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { __spread, __decorate } from 'tslib';
+import { Injectable, NgModule } from '@angular/core';
 
 var NgBodyScrollLockService = /** @class */ (function () {
-    function NgBodyScrollLockService(platformId) {
-        this.platformId = platformId;
+    function NgBodyScrollLockService() {
         this.hasPassiveEvents = false;
         this.initialClientY = -1;
         this.locks = [];
         this.documentListenerAdded = false;
-        if (isPlatformBrowser(this.platformId)) {
-            this.TestPassive();
-            this.CheckIfIsIosDevice();
-        }
+        this.TestPassive();
+        this.CheckIfIsIosDevice();
     }
     NgBodyScrollLockService.prototype.DisableBodyScroll = function (targetElement, options) {
         var _this = this;
@@ -186,12 +182,8 @@ var NgBodyScrollLockService = /** @class */ (function () {
             window.removeEventListener('testPassive', null, passiveTestOptions);
         }
     };
-    NgBodyScrollLockService.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
-    ]; };
     NgBodyScrollLockService = __decorate([
-        Injectable(),
-        __param(0, Inject(PLATFORM_ID))
+        Injectable()
     ], NgBodyScrollLockService);
     return NgBodyScrollLockService;
 }());
@@ -201,7 +193,7 @@ var NgBodyScrollLockModule = /** @class */ (function () {
     }
     NgBodyScrollLockModule = __decorate([
         NgModule({
-            providers: [NgBodyScrollLockService],
+            providers: [NgBodyScrollLockService]
         })
     ], NgBodyScrollLockModule);
     return NgBodyScrollLockModule;

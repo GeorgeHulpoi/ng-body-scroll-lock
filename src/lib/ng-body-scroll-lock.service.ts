@@ -1,5 +1,4 @@
-import {Injectable, Inject, PLATFORM_ID} from '@angular/core';
-import {isPlatformBrowser} from '@angular/common';
+import { Injectable } from '@angular/core';
 
 export interface BodyScrollOptions
 {
@@ -26,13 +25,10 @@ export class NgBodyScrollLockService
     private previousBodyPaddingRight: string;
     private previousBodyOverflowSetting: string;
 
-    constructor(@Inject(PLATFORM_ID) private platformId)
+    constructor()
     {
-        if (isPlatformBrowser(this.platformId))
-        {
-            this.TestPassive();
-            this.CheckIfIsIosDevice();
-        }
+        this.TestPassive();
+        this.CheckIfIsIosDevice();
     }
 
     public DisableBodyScroll(targetElement: any, options?: BodyScrollOptions): void {

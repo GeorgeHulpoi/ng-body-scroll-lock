@@ -3,7 +3,6 @@ export interface BodyScrollOptions {
     allowTouchMove?: (el: any) => boolean;
 }
 export declare class NgBodyScrollLockService {
-    private platformId;
     private hasPassiveEvents;
     private isIosDevice;
     private initialClientY;
@@ -11,7 +10,7 @@ export declare class NgBodyScrollLockService {
     private documentListenerAdded;
     private previousBodyPaddingRight;
     private previousBodyOverflowSetting;
-    constructor(platformId: any);
+    constructor();
     DisableBodyScroll(targetElement: any, options?: BodyScrollOptions): void;
     ClearAllBodyScrollLocks(): void;
     EnableBodyScroll(targetElement: any): void;
