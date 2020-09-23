@@ -224,7 +224,8 @@
     }
 
     var NgBodyScrollLockService = /** @class */ (function () {
-        function NgBodyScrollLockService() {
+        function NgBodyScrollLockService(renderer) {
+            this.renderer = renderer;
             this.hasPassiveEvents = false;
             this.initialClientY = -1;
             this.locks = [];
@@ -313,13 +314,13 @@
         };
         NgBodyScrollLockService.prototype.RestoreOverflowSetting = function () {
             if (this.previousBodyPaddingRight !== undefined) {
-                document.body.style.paddingRight = this.previousBodyPaddingRight;
+                this.renderer.setStyle(document.body, 'padding-right', this.previousBodyPaddingRight);
                 // Restore previousBodyPaddingRight to undefined so setOverflowHidden knows it
                 // can be set again.
                 this.previousBodyPaddingRight = undefined;
             }
             if (this.previousBodyOverflowSetting !== undefined) {
-                document.body.style.overflow = this.previousBodyOverflowSetting;
+                this.renderer.setStyle(document.body, 'overflow', this.previousBodyOverflowSetting);
                 // Restore previousBodyOverflowSetting to undefined
                 // so setOverflowHidden knows it can be set again.
                 this.previousBodyOverflowSetting = undefined;
@@ -332,13 +333,13 @@
                 var scrollBarGap = window.innerWidth - document.documentElement.clientWidth;
                 if (reserveScrollBarGap && scrollBarGap > 0) {
                     this.previousBodyPaddingRight = document.body.style.paddingRight;
-                    document.body.style.paddingRight = scrollBarGap + "px";
+                    this.renderer.setStyle(document.body, 'padding-right', scrollBarGap + "px");
                 }
             }
             // If previousBodyOverflowSetting is already set, don't set it again.
             if (this.previousBodyOverflowSetting === undefined) {
                 this.previousBodyOverflowSetting = document.body.style.overflow;
-                document.body.style.overflow = 'hidden';
+                this.renderer.setStyle(document.body, 'overflow', 'hidden');
             }
         };
         NgBodyScrollLockService.prototype.PreventDefault = function (rawEvent) {
@@ -404,6 +405,9 @@
                 window.removeEventListener('testPassive', null, passiveTestOptions);
             }
         };
+        NgBodyScrollLockService.ctorParameters = function () { return [
+            { type: core.Renderer2 }
+        ]; };
         NgBodyScrollLockService = __decorate([
             core.Injectable()
         ], NgBodyScrollLockService);

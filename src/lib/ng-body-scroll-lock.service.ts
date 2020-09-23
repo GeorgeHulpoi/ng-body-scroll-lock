@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Renderer2 } from '@angular/core';
 
 export interface BodyScrollOptions
 {
@@ -25,7 +25,7 @@ export class NgBodyScrollLockService
     private previousBodyPaddingRight: string;
     private previousBodyOverflowSetting: string;
 
-    constructor()
+    constructor(private renderer: Renderer2)
     {
         this.TestPassive();
         this.CheckIfIsIosDevice();
@@ -124,7 +124,7 @@ export class NgBodyScrollLockService
 
     private RestoreOverflowSetting(): void {
         if (this.previousBodyPaddingRight !== undefined) {
-            document.body.style.paddingRight = this.previousBodyPaddingRight;
+            this.renderer.setStyle(document.body, 'padding-right', this.previousBodyPaddingRight);
 
             // Restore previousBodyPaddingRight to undefined so setOverflowHidden knows it
             // can be set again.
@@ -132,7 +132,7 @@ export class NgBodyScrollLockService
         }
 
         if (this.previousBodyOverflowSetting !== undefined) {
-            document.body.style.overflow = this.previousBodyOverflowSetting;
+            this.renderer.setStyle(document.body, 'overflow', this.previousBodyOverflowSetting);
 
             // Restore previousBodyOverflowSetting to undefined
             // so setOverflowHidden knows it can be set again.
@@ -148,13 +148,13 @@ export class NgBodyScrollLockService
 
             if (reserveScrollBarGap && scrollBarGap > 0) {
                 this.previousBodyPaddingRight = document.body.style.paddingRight;
-                document.body.style.paddingRight = `${scrollBarGap}px`;
+                this.renderer.setStyle(document.body, 'padding-right', `${scrollBarGap}px`);
             }
         }
         // If previousBodyOverflowSetting is already set, don't set it again.
         if (this.previousBodyOverflowSetting === undefined) {
             this.previousBodyOverflowSetting = document.body.style.overflow;
-            document.body.style.overflow = 'hidden';
+            this.renderer.setStyle(document.body, 'overflow', 'hidden');
         }
     }
 
