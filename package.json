@@ -2,7 +2,7 @@
   "name": "ng-body-scroll-lock",
   "description": "Angular Service implementation for https://github.com/willmcpo/body-scroll-lock",
   "author": "George-Valentin Hulpoi <contact@gvhdev.com> (https://gvhdev.com)",
-  "version": "0.0.1",
+  "version": "0.0.2-beta.1",
   "license": "MIT",
   "repository": "https://github.com/GeorgeHulpoi/ng-body-scroll-lock.git",
   "bugs": {
