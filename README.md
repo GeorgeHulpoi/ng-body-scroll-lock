@@ -4,18 +4,22 @@ This is an Angular library that implements the [body-scroll-lock](https://github
 
 ## Install
 
-    $ yarn add ng-body-scroll-lock
-    
-    or
-    
-    $ npm install ng-body-scroll-lock
+```bash
+$ yarn add ng-body-scroll-lock
+
+or
+
+$ npm install ng-body-scroll-lock
+```
 
 ## Usage
 
-Import the **NgBodyScrollLock** in your module.
+### Import Module/Service in your Module
 
-##### Example
+Import the **NgBodyScrollLockModule** in your module or import **NgBodyScrollLockService** in your providers.
+#### !!! Be aware that on some Angular versions it would not work importing the **NgBodyScrollLockModule**, in that case, you have to import the **NgBodyScrollLockService** in providers!
 
+##### Example with module
 ```typescript
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -44,6 +48,41 @@ import { HamburgerIconComponent } from './hamburger-icon/hamburger-icon.componen
 })
 export class NavigationBarModule { }
 ```
+##### Example with service
+```typescript
+typescript
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { NgBodyScrollLockService } from 'ng-body-scroll-lock';
+
+import { NavigationBarComponent } from './navigation-bar.component';
+import { HamburgerIconComponent } from './hamburger-icon/hamburger-icon.component';
+
+@NgModule({
+	imports:
+	[
+		CommonModule,
+		RouterModule
+	],
+	declarations:
+	[
+		NavigationBarComponent,
+		HamburgerIconComponent
+	],
+	exports:
+	[
+		NavigationBarComponent
+	],
+    providers: 
+    [
+        NgBodyScrollLockService
+    ]
+})
+export class NavigationBarModule { }
+```
+
+### Import Service to use Body Scroll Lock
 
 Import the **NgBodyScrollLockService** where you want to use it
 
