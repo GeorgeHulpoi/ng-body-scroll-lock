@@ -1,13 +1,25 @@
 import { __decorate } from 'tslib';
-import { Renderer2, Injectable, NgModule } from '@angular/core';
+import { RendererFactory2, NgZone, Injectable, NgModule } from '@angular/core';
+import { Observable, fromEvent } from 'rxjs';
 
+function outsideZone(zone) {
+    return (source) => {
+        return new Observable(observer => {
+            let sub;
+            zone.runOutsideAngular(() => {
+                sub = source.subscribe(observer);
+            });
+            return sub;
+        });
+    };
+}
 let NgBodyScrollLockService = class NgBodyScrollLockService {
-    constructor(renderer) {
-        this.renderer = renderer;
+    constructor(rendererFactory, ngZone) {
+        this.ngZone = ngZone;
         this.hasPassiveEvents = false;
         this.initialClientY = -1;
         this.locks = [];
-        this.documentListenerAdded = false;
+        this.renderer = rendererFactory.createRenderer(null, null);
         this.TestPassive();
         this.CheckIfIsIosDevice();
     }
@@ -26,27 +38,36 @@ let NgBodyScrollLockService = class NgBodyScrollLockService {
         const lock = {
             targetElement,
             options: options || {},
+            subscriptions: []
         };
-        this.locks = [...this.locks, lock];
         if (this.isIosDevice) {
-            targetElement.ontouchstart = (event) => {
+            let subscribe;
+            subscribe = fromEvent(targetElement, 'touchstart', this.hasPassiveEvents ? { passive: false } : undefined)
+                .pipe(outsideZone(this.ngZone))
+                .subscribe((event) => {
                 if (event.targetTouches.length === 1) {
                     // detect single touch.
                     this.initialClientY = event.targetTouches[0].clientY;
                 }
-            };
-            targetElement.ontouchmove = (event) => {
+            });
+            lock.subscriptions.push(subscribe);
+            subscribe = fromEvent(targetElement, 'touchmove', this.hasPassiveEvents ? { passive: false } : undefined)
+                .pipe(outsideZone(this.ngZone))
+                .subscribe((event) => {
                 if (event.targetTouches.length === 1) {
                     // detect single touch.
                     this.HandleScroll(event, targetElement);
                 }
-            };
-            if (!this.documentListenerAdded) {
-                document.addEventListener('touchmove', this.PreventDefault.bind(this), this.hasPassiveEvents ? { passive: false } : undefined);
-                this.documentListenerAdded = true;
+            });
+            lock.subscriptions.push(subscribe);
+            if (!this.documentListener) {
+                this.documentListener = fromEvent(document, 'touchmove', this.hasPassiveEvents ? { passive: false } : undefined)
+                    .pipe(outsideZone(this.ngZone))
+                    .subscribe(this.PreventDefault.bind(this));
             }
         }
-        else {
+        this.locks.push(lock);
+        if (!this.isIosDevice) {
             this.SetOverflowHidden(options);
         }
     }
@@ -54,13 +75,12 @@ let NgBodyScrollLockService = class NgBodyScrollLockService {
         if (this.isIosDevice) {
             // Clear all locks ontouchstart/ontouchmove handlers, and the references.
             this.locks.forEach((lock) => {
-                lock.targetElement.ontouchstart = null;
-                lock.targetElement.ontouchmove = null;
+                lock.subscriptions.forEach((s) => s.unsubscribe());
             });
-            if (this.documentListenerAdded) {
+            if (this.documentListener) {
                 // Passive argument removed because EventListenerOptions doesn't contain passive property.
-                document.removeEventListener('touchmove', this.PreventDefault.bind(this));
-                this.documentListenerAdded = false;
+                this.documentListener.unsubscribe();
+                this.documentListener = undefined;
             }
             // Reset initial clientY.
             this.initialClientY = -1;
@@ -76,14 +96,18 @@ let NgBodyScrollLockService = class NgBodyScrollLockService {
             console.error('enableBodyScroll unsuccessful - targetElement must be provided when calling enableBodyScroll on IOS devices.');
             return;
         }
-        this.locks = this.locks.filter(lock => lock.targetElement !== targetElement);
-        if (this.isIosDevice) {
-            targetElement.ontouchstart = null;
-            targetElement.ontouchmove = null;
-            if (this.documentListenerAdded && this.locks.length === 0) {
-                document.removeEventListener('touchmove', this.PreventDefault.bind(this));
-                this.documentListenerAdded = false;
+        this.locks = this.locks.filter(lock => {
+            if (lock.targetElement === targetElement) {
+                lock.subscriptions.forEach((s) => s.unsubscribe());
+                return false;
             }
+            else {
+                return true;
+            }
+        });
+        if (this.isIosDevice && this.documentListener && this.locks.length === 0) {
+            this.documentListener.unsubscribe();
+            this.documentListener = undefined;
         }
         else if (!this.locks.length) {
             this.RestoreOverflowSetting();
@@ -177,14 +201,17 @@ let NgBodyScrollLockService = class NgBodyScrollLockService {
                     return undefined;
                 }
             };
-            window.addEventListener('testPassive', null, passiveTestOptions);
-            // @ts-ignore
-            window.removeEventListener('testPassive', null, passiveTestOptions);
+            this.ngZone.runOutsideAngular(() => {
+                window.addEventListener('testPassive', null, passiveTestOptions);
+                // @ts-ignore
+                window.removeEventListener('testPassive', null, passiveTestOptions);
+            });
         }
     }
 };
 NgBodyScrollLockService.ctorParameters = () => [
-    { type: Renderer2 }
+    { type: RendererFactory2 },
+    { type: NgZone }
 ];
 NgBodyScrollLockService = __decorate([
     Injectable()
